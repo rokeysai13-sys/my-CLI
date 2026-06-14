@@ -1,3 +1,4 @@
+from core.logger import logger
 import sqlite3
 import json
 import os
@@ -33,11 +34,34 @@ def init_db():
             created_at TEXT NOT NULL
         )
     """)
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS summaries (
+            id         INTEGER PRIMARY KEY AUTOINCREMENT,
+            session_id TEXT NOT NULL,
+            username   TEXT DEFAULT 'guest',
+            summary    TEXT NOT NULL,
+            created_at TEXT NOT NULL
+        )
+    """)
+    
+    # Run dynamic migrations for existing tables
+    try:
+        conn.execute("ALTER TABLE conversations ADD COLUMN username TEXT DEFAULT 'guest'")
+    except sqlite3.OperationalError:
+        pass  # already exists
+        
+    try:
+        conn.execute("ALTER TABLE summaries ADD COLUMN username TEXT DEFAULT 'guest'")
+    except sqlite3.OperationalError:
+        pass  # already exists
+        
     conn.execute("CREATE INDEX IF NOT EXISTS idx_session ON conversations(session_id)")
     conn.execute("CREATE INDEX IF NOT EXISTS idx_pmem ON persistent_memory(username)")
+    conn.execute("CREATE INDEX IF NOT EXISTS idx_summaries ON summaries(session_id)")
+    conn.execute("CREATE INDEX IF NOT EXISTS idx_conv_created_at ON conversations(created_at)")
     conn.commit()
     conn.close()
-    print(f"  DB ready: {DB_PATH}")
+    logger.info(f"  DB ready: {DB_PATH}")
 
 def save_conversation(session_id, agent, prompt, response, extra=None, username="guest"):
     try:
@@ -50,7 +74,7 @@ def save_conversation(session_id, agent, prompt, response, extra=None, username=
         conn.commit()
         conn.close()
     except Exception as e:
-        print(f"DB save error: {e}")
+        logger.error(f"DB save error: {e}")
 
 # ── PERSISTENT MEMORY ──
 def save_persistent_memory(username, role, content):
@@ -70,21 +94,49 @@ def save_persistent_memory(username, role, content):
         conn.commit()
         conn.close()
     except Exception as e:
-        print(f"Memory save error: {e}")
+        logger.error(f"Memory save error: {e}")
 
-def load_persistent_memory(username):
+def load_persistent_memory(username, limit=100):
     """Load conversation history for a user from DB."""
     try:
         conn = get_db()
         rows = conn.execute(
-            "SELECT role, content FROM persistent_memory WHERE username=? ORDER BY id ASC",
-            (username,)
+            "SELECT role, content FROM persistent_memory WHERE username=? ORDER BY id ASC LIMIT ?",
+            (username, limit)
         ).fetchall()
         conn.close()
         return [{"role": r["role"], "content": r["content"]} for r in rows]
     except Exception as e:
-        print(f"Memory load error: {e}")
+        logger.error(f"Memory load error: {e}")
         return []
+
+def count_messages(session_id: str) -> int:
+    """Count messages in persistent_memory for a given session (username used as key)."""
+    try:
+        conn = get_db()
+        # session_id maps to username in persistent_memory
+        row = conn.execute(
+            "SELECT COUNT(*) as c FROM persistent_memory WHERE username=?",
+            (session_id,)
+        ).fetchone()
+        conn.close()
+        return row["c"] if row else 0
+    except Exception as e:
+        logger.error(f"count_messages error: {e}")
+        return 0
+
+def save_summary(session_id: str, summary: str, username: str = "guest"):
+    """Persist an episodic summary to the summaries table."""
+    try:
+        conn = get_db()
+        conn.execute(
+            "INSERT INTO summaries (session_id, username, summary, created_at) VALUES (?,?,?,?)",
+            (session_id, username, summary, datetime.now().isoformat())
+        )
+        conn.commit()
+        conn.close()
+    except Exception as e:
+        logger.error(f"save_summary error: {e}")
 
 def clear_persistent_memory(username):
     conn = get_db()

@@ -1,6 +1,10 @@
-echo "__pycache__/
-*.pyc
+.venv/
+__pycache__/
+node_modules/
+desktop/node_modules/
+gateway/node_modules/
+memory/chroma_db/
+logs/
+reports/
+*.db
 .env
-*.egg-info
-.vscode/
-" > .gitignore

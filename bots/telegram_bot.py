@@ -1,6 +1,7 @@
 """
 bots/telegram_bot.py — Full Telegram Gateway for kirannn
 """
+from core.logger import logger
 import os, sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -169,10 +170,61 @@ async def cmd_status(u: Update, c):
     await u.message.reply_text("\n".join(lines), parse_mode="Markdown")
 
 async def handle_msg(u: Update, c):
-    msg = u.message.text
-    await u.message.reply_text("🤔 Thinking...")
-    r = run_agent(msg)
-    await u.message.reply_text(r.get("response","")[:2000])
+    """Default message handler — streams response as it generates."""
+    msg   = u.message.text
+    sid   = f"tg_{u.effective_user.id}"
+    # Send a placeholder message we'll edit with streaming chunks
+    placeholder = await u.message.reply_text("⏳ Thinking...")
+    try:
+        import requests as req, json
+        r = req.post(
+            "http://localhost:8000/chat",
+            json={"message": msg, "session_id": sid, "stream": True},
+            stream=True, timeout=120
+        )
+        full = ""
+        last_edit_len = 0
+        for line in r.iter_lines():
+            if not line:
+                continue
+            raw = line.decode("utf-8") if isinstance(line, bytes) else line
+            if not raw.startswith("data:"):
+                continue
+            try:
+                data = json.loads(raw[5:])
+            except Exception:
+                continue
+            if data.get("type") == "token":
+                full += data["text"]
+                # Edit every ~80 new chars to avoid Telegram rate-limit
+                if len(full) - last_edit_len >= 80:
+                    try:
+                        await placeholder.edit_text(full[-3800:] or "...")
+                        last_edit_len = len(full)
+                    except Exception:
+                        pass
+            elif data.get("type") == "done":
+                full = data.get("full", full)
+                break
+        final_text = (full or "No response")[-4000:]
+        await placeholder.edit_text(final_text)
+    except Exception as e:
+        # Fallback to non-streaming if SSE fails
+        try:
+            r_plain = run_agent(msg)
+            await placeholder.edit_text(r_plain.get("response", str(e))[:4000])
+        except Exception as e2:
+            await placeholder.edit_text(f"❌ Error: {e2}")
+
+async def cmd_stream(u: Update, c):
+    """Explicit /stream command to test streaming."""
+    msg = " ".join(c.args)
+    if not msg:
+        await u.message.reply_text("Usage: /stream <your question>")
+        return
+    # Reuse handle_msg with a fake Update replacement
+    u.message.text = msg
+    await handle_msg(u, c)
 
 def run_telegram_bot():
     if not OK: print("[TELEGRAM] Not installed — pip install python-telegram-bot"); return
@@ -182,10 +234,11 @@ def run_telegram_bot():
                     ("debate",cmd_debate),("code",cmd_code),("research",cmd_research),
                     ("shell",cmd_shell),("search",cmd_search),("memory",cmd_memory),
                     ("remember",cmd_remember),("read",cmd_read),("write",cmd_write),
-                    ("reports",cmd_reports),("selfcode",cmd_selfcode),("status",cmd_status)]:
+                    ("reports",cmd_reports),("selfcode",cmd_selfcode),("status",cmd_status),
+                    ("stream", cmd_stream)]:
         app.add_handler(CommandHandler(cmd, fn))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_msg))
-    print("[TELEGRAM] Bot starting...")
+    logger.info("[TELEGRAM] Bot starting with streaming support...")
     app.run_polling(drop_pending_updates=True)
 
 if __name__ == "__main__":

@@ -1,3 +1,4 @@
+from core.logger import logger
 from core.models import ask, MODELS
 
 def run_debate(prompt, history=None, rounds=2):
@@ -7,10 +8,10 @@ def run_debate(prompt, history=None, rounds=2):
     Round 2: Critique again → Final Rewrite
     Then vote
     """
-    print(f"DEBATE: Starting {rounds}-round debate")
+    logger.info(f"DEBATE: Starting {rounds}-round debate")
 
     # ── ROUND 1: RESEARCH ──
-    print("DEBATE: Round 1 - Research")
+    logger.info("DEBATE: Round 1 - Research")
     answers = {}
     answers["LLAMA3"]  = ask(MODELS["general"],  prompt, history, "general",  "research")
     answers["MISTRAL"] = ask(MODELS["reason"],   prompt, history, "reason",   "research")
@@ -19,7 +20,7 @@ def run_debate(prompt, history=None, rounds=2):
     all_rounds = {"round1_research": dict(answers)}
 
     for round_num in range(1, rounds + 1):
-        print(f"DEBATE: Round {round_num} - Critique")
+        logger.info(f"DEBATE: Round {round_num} - Critique")
         critiques = {}
         for my_name, my_key in [("LLAMA3","general"),("MISTRAL","reason"),("QWEN","analysis")]:
             others = "\n\n".join(f"[{n}]:\n{a}" for n,a in answers.items() if n != my_name)
@@ -33,7 +34,7 @@ def run_debate(prompt, history=None, rounds=2):
             )
             critiques[my_name] = ask(MODELS[my_key], cp, None, my_key, "critique")
 
-        print(f"DEBATE: Round {round_num} - Rewrite")
+        logger.info(f"DEBATE: Round {round_num} - Rewrite")
         new_answers = {}
         for my_name, my_key in [("LLAMA3","general"),("MISTRAL","reason"),("QWEN","analysis")]:
             received = "\n\n".join(

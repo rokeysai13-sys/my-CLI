@@ -1,0 +1,100 @@
+[
+  {
+    "timestamp": "2026-06-13T21:38:33.159802",
+    "mission_id": "2dfab983",
+    "decision_type": "creation",
+    "details": "Created mission: 'Analyze stock market trends for AAPL'",
+    "rationale": "User initiated a long-term goal that requires autonomous planning and execution."
+  },
+  {
+    "timestamp": "2026-06-13T21:39:43.112968",
+    "mission_id": "2dfab983",
+    "decision_type": "task_execution",
+    "details": "Subtask 1 passed evaluation with score 5.",
+    "rationale": "Self-evaluation verified completeness and accuracy of result."
+  },
+  {
+    "timestamp": "2026-06-14T11:09:43.412408",
+    "mission_id": "test_mission_123",
+    "decision_type": "team_spawning",
+    "details": "Spawned 3 agents: Web Scraper Developer, Data Analyst, DevOps Engineer",
+    "rationale": "Goal 'Build a simple web scraper' decomposed into a specialized multi-agent squad."
+  },
+  {
+    "timestamp": "2026-06-14T11:10:22.588142",
+    "mission_id": "test_mission_123",
+    "decision_type": "council_vote",
+    "details": "Council Vote result: FAILED (Approvals: 1, Rejections: 2)",
+    "rationale": "Agents peer-reviewed the blackboard content to confirm completion."
+  },
+  {
+    "timestamp": "2026-06-14T11:10:22.611187",
+    "mission_id": "3c0f438a",
+    "decision_type": "creation",
+    "details": "Created mission: 'Create a hello world python script and verify it runs' in multi_agent mode",
+    "rationale": "User initiated a long-term goal that requires autonomous planning and execution."
+  },
+  {
+    "timestamp": "2026-06-14T11:10:33.158379",
+    "mission_id": "3c0f438a",
+    "decision_type": "team_spawning",
+    "details": "Spawned 3 agents: Python Expert, Verification Specialist, Researcher",
+    "rationale": "Goal 'Create a hello world python script and verify it runs' decomposed into a specialized multi-agent squad."
+  },
+  {
+    "timestamp": "2026-06-14T11:12:39.431124",
+    "mission_id": "3c0f438a",
+    "decision_type": "council_vote",
+    "details": "Council Vote result: PASSED (Approvals: 2, Rejections: 1)",
+    "rationale": "Agents peer-reviewed the blackboard content to confirm completion."
+  },
+  {
+    "timestamp": "2026-06-14T11:12:39.446280",
+    "mission_id": "3c0f438a",
+    "decision_type": "completion",
+    "details": "Mission goals achieved via multi-agent team consensus.",
+    "rationale": "Council vote passed and final reports saved to: C:\\my_ai_team\\reports\\20260614_1112_multi_agent_3c0f438a.md"
+  },
+  {
+    "timestamp": "2026-06-14T11:36:39.872808",
+    "mission_id": "3e6f3a6c",
+    "decision_type": "creation",
+    "details": "Created mission: 'Commit Uncommitted Changes: Commit all uncommitted changes in the local repository to the remote repository. This includes updating the staging area with any modified files, adding new files if necessary, and then pushing the committed changes to the remote repository.' in multi_agent mode",
+    "rationale": "User initiated a long-term goal that requires autonomous planning and execution."
+  },
+  {
+    "timestamp": "2026-06-14T11:36:50.769078",
+    "mission_id": "3e6f3a6c",
+    "decision_type": "team_spawning",
+    "details": "Spawned 3 agents: Change Detector, Staging Manager, Push Coordinator",
+    "rationale": "Goal 'Commit Uncommitted Changes: Commit all uncommitted changes in the local repository to the remote repository. This includes updating the staging area with any modified files, adding new files if necessary, and then pushing the committed changes to the remote repository.' decomposed into a specialized multi-agent squad."
+  },
+  {
+    "timestamp": "2026-06-14T11:39:17.708975",
+    "mission_id": "3e6f3a6c",
+    "decision_type": "council_vote",
+    "details": "Council Vote result: FAILED (Approvals: 0, Rejections: 3)",
+    "rationale": "Agents peer-reviewed the blackboard content to confirm completion."
+  },
+  {
+    "timestamp": "2026-06-14T11:42:15.114651",
+    "mission_id": "cdb92179",
+    "decision_type": "creation",
+    "details": "Created mission: 'Commit or Discard Uncommitted Changes: Implement a solution to review and manage the uncommitted changes across all files, commit or discard them as necessary, and ensure that the codebase is in a stable and maintainable state. This task will involve reviewing the code for any errors, inconsistencies, or potential issues, making decisions on what changes to retain or discard, and implementing the necessary commits or reverts to bring the project up-to-date.' in multi_agent mode",
+    "rationale": "User initiated a long-term goal that requires autonomous planning and execution."
+  },
+  {
+    "timestamp": "2026-06-14T11:42:29.858263",
+    "mission_id": "cdb92179",
+    "decision_type": "team_spawning",
+    "details": "Spawned 4 agents: Code Reviewer, Change Manager, Committer/Reverter, Documentation Writer",
+    "rationale": "Goal 'Commit or Discard Uncommitted Changes: Implement a solution to review and manage the uncommitted changes across all files, commit or discard them as necessary, and ensure that the codebase is in a stable and maintainable state. This task will involve reviewing the code for any errors, inconsistencies, or potential issues, making decisions on what changes to retain or discard, and implementing the necessary commits or reverts to bring the project up-to-date.' decomposed into a specialized multi-agent squad."
+  },
+  {
+    "timestamp": "2026-06-14T11:45:40.313516",
+    "mission_id": "cdb92179",
+    "decision_type": "council_vote",
+    "details": "Council Vote result: FAILED (Approvals: 0, Rejections: 4)",
+    "rationale": "Agents peer-reviewed the blackboard content to confirm completion."
+  }
+]

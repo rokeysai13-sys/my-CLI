@@ -1,3 +1,4 @@
+from core.logger import logger
 import ollama
 
 MODELS = {
@@ -29,38 +30,45 @@ DEBATE_PROMPTS = {
 }
 
 def ask(model, prompt, history=None, model_key="general", debate_phase=None):
-    messages = []
+    from core.llm import llm_generate
     system = DEBATE_PROMPTS.get(debate_phase) if debate_phase else SYSTEM_PROMPTS.get(model_key, SYSTEM_PROMPTS["general"])
-    messages.append({"role": "system", "content": system})
+    
+    full_prompt = ""
     if history:
-        messages.extend(history[-10:])
-    messages.append({"role": "user", "content": prompt})
-    try:
-        response = ollama.chat(model=model, messages=messages, options=OPTIONS)
-        return response["message"]["content"]
-    except Exception as e:
-        raise RuntimeError(f"Ollama error: {e}")
+        for msg in history[-10:]:
+            role = msg.get("role", "user") if isinstance(msg, dict) else (msg[0] if isinstance(msg, tuple) else "user")
+            content = msg.get("content", "") if isinstance(msg, dict) else (msg[1] if isinstance(msg, tuple) else str(msg))
+            full_prompt += f"{str(role).capitalize()}: {content}\n\n"
+    full_prompt += f"User: {prompt}"
+    
+    res = llm_generate(full_prompt, model=model, system=system)
+    if isinstance(res, dict):
+        return res.get("response", "").strip()
+    return str(res).strip()
 
 def ask_stream(model, prompt, history=None, model_key="general", debate_phase=None):
-    messages = []
+    from core.retry import ollama_stream
     system = DEBATE_PROMPTS.get(debate_phase) if debate_phase else SYSTEM_PROMPTS.get(model_key, SYSTEM_PROMPTS["general"])
-    messages.append({"role": "system", "content": system})
+    
+    full_prompt = ""
     if history:
-        messages.extend(history[-10:])
-    messages.append({"role": "user", "content": prompt})
+        for msg in history[-10:]:
+            role = msg.get("role", "user") if isinstance(msg, dict) else (msg[0] if isinstance(msg, tuple) else "user")
+            content = msg.get("content", "") if isinstance(msg, dict) else (msg[1] if isinstance(msg, tuple) else str(msg))
+            full_prompt += f"{str(role).capitalize()}: {content}\n\n"
+    full_prompt += f"User: {prompt}"
+    
     try:
-        for chunk in ollama.chat(model=model, messages=messages, stream=True, options=OPTIONS):
-            text = chunk.get("message", {}).get("content", "")
-            if text:
-                yield text
+        for chunk in ollama_stream(full_prompt, model=model, system=system):
+            yield chunk
     except Exception as e:
         yield f"[Error: {e}]"
 
 def warmup():
-    print("Warming up models...")
+    logger.info("Warming up models...")
     for name, model in MODELS.items():
         try:
             ollama.chat(model=model, messages=[{"role": "user", "content": "hi"}], options=OPTIONS)
-            print(f"  OK {model} ready")
+            logger.info(f"  OK {model} ready")
         except Exception as e:
-            print(f"  FAIL {model}: {e}")
+            logger.error(f"  FAIL {model}: {e}")

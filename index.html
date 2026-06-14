@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>kirannn</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#fbfbfd;--sb:rgba(255, 255, 255, 0.65);--s1:#ffffff;--s2:#f5f5f7;--s3:#e8e8ed;
+  --b:#e5e5ea;--b2:#d1d1d6;--t:#1d1d1f;--m:#86868b;--d:#a1a1a6;
+  --acc:#0071e3;--acc2:rgba(0,113,227,.13);
+  --blue:#007aff;--pur:#af52de;--grn:#34c759;--org:#ff9500;--pnk:#ff2d55;--ind:#5856d6;
+  --font:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --mono:'JetBrains Mono', SFMono-Regular, Consolas, monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0; -webkit-font-smoothing: antialiased;}
+body{font-family:var(--font);background:var(--bg);color:var(--t);height:100vh;display:flex;overflow:hidden; letter-spacing: -0.01em;}
+
+/* SIDEBAR */
+#sb{width:280px;min-width:280px;background:var(--sb);backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%); display:flex;flex-direction:column;border-right:1px solid rgba(0,0,0,0.05);height:100vh;overflow-y:auto; z-index: 10;}
+.logo{padding:16px 14px 12px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--b);flex-shrink:0}
+.logo-ico{width:32px;height:32px;background:var(--acc);border-radius:9px;display:grid;place-items:center;font-size:16px;flex-shrink:0}
+.logo-txt{font-size:15px;font-weight:700;letter-spacing:-.02em}
+.logo-txt span{color:var(--acc)}
+.logo-ver{margin-left:auto;font-size:10px;color:var(--d);font-family:var(--mono)}
+
+.sec{padding:12px 10px 6px}
+.sec-lbl{font-size:10px;font-weight:600;color:var(--d);text-transform:uppercase;letter-spacing:.1em;padding:0 6px;margin-bottom:4px}
+
+.ab{display:flex;align-items:center;gap:9px;padding:7px 8px;border-radius:8px;cursor:pointer;transition:background .15s;border:none;background:none;width:100%;color:var(--m);font-family:var(--font);font-size:13px;text-align:left}
+.ab:hover{background:var(--s1);color:var(--t)}
+.ab.active{background:var(--s2);color:var(--t)}
+.adot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.ameta strong{display:block;font-weight:500;font-size:13px}
+.ameta small{font-size:11px;color:var(--d)}
+.ab.active .ameta small{color:var(--m)}
+
+hr.div{border:none;border-top:1px solid var(--b);margin:6px 12px}
+
+.tb{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:7px;cursor:pointer;font-size:12px;color:var(--m);transition:all .15s;border:none;background:none;width:100%;font-family:var(--font)}
+.tb:hover{background:var(--s1);color:var(--t)}
+.tb-ico{font-size:13px;width:18px;text-align:center}
+
+.sb-foot{margin-top:auto;padding:10px;border-top:1px solid var(--b);display:flex;flex-direction:column;gap:7px;flex-shrink:0}
+.stat-row{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--m);padding:6px 8px;background:var(--s1);border-radius:7px}
+.pulse{width:7px;height:7px;border-radius:50%;background:var(--grn);box-shadow:0 0 7px var(--grn);animation:pa 2s infinite}
+.pulse.off{background:#ef4444;box-shadow:0 0 7px #ef4444;animation:none}
+@keyframes pa{0%,100%{opacity:1}50%{opacity:.35}}
+.new-btn{width:100%;padding:7px;background:var(--s2);border:1px solid var(--b);border-radius:8px;color:var(--m);font-size:12px;font-family:var(--font);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .15s}
+.new-btn:hover{background:var(--s3);color:var(--t)}
+
+/* MAIN */
+#main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+
+/* TOPBAR */
+#top{padding:16px 24px;background: rgba(251, 251, 253, 0.8); backdrop-filter: blur(12px); border-bottom:1px solid rgba(0,0,0,0.05);display:flex;align-items:center;justify-content:space-between;flex-shrink:0; z-index: 5;}
+.tl{display:flex;align-items:center;gap:9px}
+.tl-dot{width:9px;height:9px;border-radius:50%}
+.tl-name{font-size:14px;font-weight:500}
+.tl-desc{font-size:12px;color:var(--d);margin-left:2px}
+.tr{display:flex;gap:6px}
+.tbtn{padding:5px 11px;background:transparent;border:1px solid var(--b);border-radius:6px;color:var(--m);font-size:11px;font-family:var(--font);cursor:pointer;transition:all .15s}
+.tbtn:hover{background:var(--s1);color:var(--t)}
+.tbtn.accent{background:var(--acc);border-color:var(--acc);color:#fff}
+.tbtn.accent:hover{opacity:.85}
+
+/* MESSAGES */
+#msgs{flex:1;overflow-y:auto;padding:20px 0}
+#msgs::-webkit-scrollbar{width:3px}
+#msgs::-webkit-scrollbar-thumb{background:var(--b);border-radius:2px}
+.mw{max-width:760px;margin:0 auto;padding:4px 20px;animation:fu .2s ease}
+@keyframes fu{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* User */
+.ur{display:flex;justify-content:flex-end; margin-bottom: 24px;}
+.ub{background:var(--acc);color:#ffffff;border-radius:20px 20px 4px 20px;padding:12px 18px;font-size:15px;line-height:1.55;max-width:75%; box-shadow: 0 4px 14px rgba(0, 113, 227, 0.15);}
+
+/* AI */
+.air{display:flex;flex-direction:column;gap:10px; margin-bottom: 24px;}
+.ai-who{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--m)}
+.ai-dot{width:8px;height:8px;border-radius:50%}
+.ai-body{font-size:15px;line-height:1.7;padding-left:15px; color:var(--t);}
+
+/* Plan card */
+.plan-card{margin-left:13px;background:var(--s1);border:1px solid var(--b);border-radius:10px;padding:14px;margin-bottom:8px}
+.plan-title{font-size:12px;font-weight:600;color:var(--acc);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.plan-step{display:flex;align-items:flex-start;gap:8px;padding:5px 0;border-bottom:1px solid var(--b);font-size:12px}
+.plan-step:last-child{border-bottom:none}
+.ps-badge{font-size:10px;font-weight:600;padding:2px 6px;border-radius:4px;flex-shrink:0;font-family:var(--mono)}
+.ps-parallel{background:rgba(96,165,250,.15);color:var(--blue)}
+.ps-seq{background:rgba(250,150,60,.15);color:var(--org)}
+
+/* Tool trace */
+.trace{padding-left:13px;display:flex;flex-direction:column;gap:4px;margin-bottom:6px}
+.trace-item{background:var(--s1);border-radius:6px;padding:5px 10px;font-size:12px;font-family:var(--mono);color:var(--m);border-left:2px solid var(--acc);display:flex;align-items:center;gap:6px}
+.ti-ok{border-left-color:var(--grn)}
+.ti-name{color:var(--acc);font-weight:500}
+.ti-ok .ti-name{color:var(--grn)}
+
+/* Debate */
+.dg{padding-left:13px;display:flex;flex-direction:column;gap:8px}
+.mc{background:var(--s1);border-radius:9px;padding:11px 13px}
+.mh{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.md-dot{width:6px;height:6px;border-radius:50%;display:inline-block}
+.mt{font-size:13.5px;line-height:1.6}
+.best-card{background:rgba(232,66,12,.07);border:1px solid rgba(232,66,12,.22);border-radius:9px;padding:11px 13px}
+.best-h{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--acc);margin-bottom:6px}
+
+/* Research */
+.rc{padding-left:13px}
+.src-list{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.src-chip{font-size:11px;padding:3px 8px;background:var(--s1);border-radius:4px;color:var(--m);font-family:var(--mono);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px}
+
+/* Confidence badges */
+.conf-high{color:#4ade80;font-weight:600}
+.conf-med{color:#fbbf24;font-weight:600}
+.conf-low{color:#f87171;font-weight:600}
+
+/* Code */
+pre{background:var(--s1);border-radius:8px;padding:12px;font-family:var(--mono);font-size:12.5px;overflow-x:auto;margin:8px 0;border:1px solid var(--b)}
+code{font-family:var(--mono);font-size:12.5px;background:var(--s1);padding:2px 5px;border-radius:4px}
+
+/* Typing */
+.typing{max-width:760px;margin:0 auto;padding:8px 20px}
+.dots{display:flex;gap:4px;padding-left:13px}
+.dots span{width:6px;height:6px;background:var(--d);border-radius:50%;animation:bo 1.2s infinite}
+.dots span:nth-child(2){animation-delay:.2s}
+.dots span:nth-child(3){animation-delay:.4s}
+@keyframes bo{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
+
+/* Welcome */
+#wc{max-width:600px;margin:45px auto;padding:0 20px;text-align:center}
+.wc-ico{width:54px;height:54px;background:var(--acc);border-radius:15px;display:grid;place-items:center;font-size:26px;margin:0 auto 18px}
+.wc-t{font-size:24px;font-weight:700;letter-spacing:-.02em;margin-bottom:8px}
+.wc-s{font-size:14px;color:var(--m);line-height:1.6;margin-bottom:26px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.chip{padding:7px 14px;background:var(--s1);border:1px solid var(--b);border-radius:20px;font-size:13px;color:var(--m);cursor:pointer;transition:all .15s;font-family:var(--font)}
+.chip:hover{background:var(--s2);color:var(--t);border-color:var(--m)}
+
+/* INPUT */
+#inp{padding:16px 24px 24px;flex-shrink:0;background: linear-gradient(0deg, var(--bg) 60%, transparent);}
+.ib{max-width:760px;margin:0 auto;background:var(--s1);border:1px solid rgba(0,0,0,0.1);border-radius:20px;display:flex;align-items:flex-end;gap:8px;padding:12px 12px 12px 20px;transition:all .2s; box-shadow: 0 8px 30px rgba(0,0,0,0.04);}
+.ib:focus-within{border-color:var(--acc); box-shadow: 0 8px 30px rgba(0, 113, 227, 0.1);}
+#pr{flex:1;background:none;border:none;outline:none;color:var(--t);font-size:14px;font-family:var(--font);line-height:1.5;resize:none;max-height:150px;min-height:24px}
+#pr::placeholder{color:var(--d)}
+.ia{display:flex;gap:4px}
+.iab{width:33px;height:33px;border-radius:7px;border:none;background:var(--s2);color:var(--m);cursor:pointer;display:grid;place-items:center;font-size:13px;transition:all .15s;flex-shrink:0}
+.iab:hover{background:var(--b);color:var(--t)}
+#sb-btn{background:var(--acc);color:#fff}
+#sb-btn:hover{opacity:.85}
+#sb-btn:disabled{opacity:.3;cursor:not-allowed}
+.hint{max-width:760px;margin:6px auto 0;text-align:center;font-size:11px;color:var(--d)}
+
+/* MODALS */
+.mb{position:fixed;inset:0;background:rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;z-index:100;backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);}
+.mo{background:rgba(255,255,255,0.85);backdrop-filter:blur(25px) saturate(200%); -webkit-backdrop-filter:blur(25px) saturate(200%); border:1px solid rgba(0,0,0,0.1);border-radius:24px;padding:28px;width:520px;max-width:95vw;max-height:85vh;overflow-y:auto; box-shadow: 0 24px 48px rgba(0,0,0,0.1);}
+.mo h3{font-size:18px;font-weight:600;margin-bottom:20px;display:flex;align-items:center;gap:10px;letter-spacing:-0.02em;}
+.mo input,.mo textarea,.mo select{width:100%;background:var(--bg);border:1px solid var(--b2);border-radius:12px;padding:12px 16px;color:var(--t);font-size:14px;font-family:var(--font);outline:none;margin-bottom:12px; transition:border 0.2s;}
+.mo input:focus,.mo textarea:focus{border-color:var(--acc); box-shadow: 0 0 0 3px var(--acc2);}
+.mo textarea{resize:vertical;min-height:100px;font-family:var(--mono); line-height:1.5;}
+.mbtns{display:flex;gap:8px;justify-content:flex-end;margin-top:4px}
+.mbtn{padding:7px 15px;border-radius:7px;border:none;cursor:pointer;font-size:13px;font-family:var(--font)}
+.mbtn.p{background:var(--acc);color:#fff}
+.mbtn.s{background:var(--s2);color:var(--m)}
+.mbtn.s:hover{background:var(--s3);color:var(--t)}
+.pre-out{background:var(--bg);border:1px solid var(--b);border-radius:7px;padding:10px;font-family:var(--mono);font-size:12px;color:var(--grn);min-height:60px;white-space:pre-wrap;margin-bottom:8px;display:none;max-height:200px;overflow-y:auto}
+.hidden{display:none!important}
+
+/* Pipeline progress */
+.pipe-steps{display:flex;gap:0;margin:8px 0;padding-left:13px}
+.ps{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--d)}
+.ps-dot{width:22px;height:22px;border-radius:50%;background:var(--s2);border:2px solid var(--b);display:grid;place-items:center;font-size:10px;flex-shrink:0}
+.ps-dot.done{background:var(--grn);border-color:var(--grn);color:#000}
+.ps-dot.active{background:var(--acc);border-color:var(--acc);color:#fff;animation:pa .8s infinite}
+.ps-line{width:30px;height:2px;background:var(--b)}
+.ps-line.done{background:var(--grn)}
+
+/* Report card */
+.rep-card{margin-left:13px;background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.2);border-radius:9px;padding:10px 13px;font-size:12px;display:flex;align-items:center;gap:8px}
+.rep-card a{color:var(--grn);text-decoration:none;font-family:var(--mono)}
+.rep-card a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+
+<aside id="sb">
+  <div class="logo">
+    <div class="logo-ico">🦾</div>
+    <div class="logo-txt">kiran<span>nn</span></div>
+    <div class="logo-ver">v2.0</div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-lbl">Agents</div>
+    <button class="ab active" id="btn-agent" onclick="sel('agent')">
+      <div class="adot" style="background:var(--acc)"></div>
+      <div class="ameta"><strong>Master Agent</strong><small>Plans · tools · memory · pipeline</small></div>
+    </button>
+    <button class="ab" id="btn-pipeline" onclick="sel('pipeline')">
+      <div class="adot" style="background:var(--org)"></div>
+      <div class="ameta"><strong>Full Pipeline</strong><small>Decompose → sub-agents → report</small></div>
+    </button>
+    <button class="ab" id="btn-debate" onclick="sel('debate')">
+      <div class="adot" style="background:var(--blue)"></div>
+      <div class="ameta"><strong>Debate</strong><small>llama3 · mistral · qwen vote</small></div>
+    </button>
+    <button class="ab" id="btn-code" onclick="sel('code')">
+      <div class="adot" style="background:var(--pur)"></div>
+      <div class="ameta"><strong>Code</strong><small>deepseek-coder · auto-exec</small></div>
+    </button>
+    <button class="ab" id="btn-research" onclick="sel('research')">
+      <div class="adot" style="background:var(--grn)"></div>
+      <div class="ameta"><strong>Research</strong><small>web search + analysis + sources</small></div>
+    </button>
+  </div>
+
+  <hr class="div"/>
+
+  <div class="sec">
+    <div class="sec-lbl">Tools</div>
+    <button class="tb" onclick="openMo('sh-mo')"><span class="tb-ico">💻</span>Shell Terminal</button>
+    <button class="tb" onclick="openMo('fi-mo')"><span class="tb-ico">📁</span>File Manager</button>
+    <button class="tb" onclick="openMo('mm-mo')"><span class="tb-ico">🧠</span>Memory Viewer</button>
+    <button class="tb" onclick="openMo('sk-mo')"><span class="tb-ico">⚡</span>Skills Hub</button>
+    <button class="tb" onclick="openMo('rp-mo')"><span class="tb-ico">📄</span>Reports</button>
+    <button class="tb" onclick="openMo('sc-mo')"><span class="tb-ico">🧬</span>Self-Coder</button>
+    <button class="tb" onclick="openMo('pl-mo')"><span class="tb-ico">📋</span>Task Planner</button>
+  </div>
+
+  <div class="sb-foot">
+    <div class="stat-row"><div class="pulse" id="srvdot"></div><span id="srvtxt">Checking…</span></div>
+    <div class="stat-row"><div class="pulse" style="background:var(--pur);box-shadow:0 0 7px var(--pur)"></div><span>Autonomous: Active</span></div>
+    <button class="new-btn" onclick="newChat()">＋ New conversation</button>
+  </div>
+</aside>
+
+<main id="main">
+  <div id="top">
+    <div class="tl">
+      <div class="tl-dot" id="tldot" style="background:var(--acc)"></div>
+      <span class="tl-name" id="tlname">Master Agent</span>
+      <span class="tl-desc" id="tldesc">— plans, uses tools, remembers, acts autonomously</span>
+    </div>
+    <div class="tr">
+      <button class="tbtn" onclick="openMo('mm-mo')">Memory</button>
+      <button class="tbtn" onclick="openMo('rp-mo')">Reports</button>
+      <button class="tbtn accent" onclick="openMo('pl-mo')">Plan Task</button>
+      <button class="tbtn" onclick="newChat()">Clear</button>
+    </div>
+  </div>
+
+  <div id="msgs">
+    <div id="wc">
+      <div class="wc-ico">🦾</div>
+      <div class="wc-t">kirannn Agent</div>
+      <div class="wc-s">Autonomous AI with task planning, parallel sub-agents, web research, code execution, and persistent memory — all running locally.</div>
+      <div class="chips">
+        <button class="chip" onclick="chip('Research the impact of solid-state batteries on the EV market')">🔋 EV battery research</button>
+        <button class="chip" onclick="chip('Write and run a Python script to find all .py files in C:/my_ai_team')">🐍 List Python files</button>
+        <button class="chip" onclick="chip('What are the latest developments in autonomous AI agents?')">🤖 AI agents news</button>
+        <button class="chip" onclick="chip('Create a new skill for monitoring GPU usage')">🧬 Self-code GPU monitor</button>
+        <button class="chip" onclick="chip('Analyze and compare GPT-4 vs Claude vs Gemini capabilities')">⚖️ LLM comparison</button>
+        <button class="chip" onclick="chip('Check what models are loaded in Ollama and show system status')">💾 System status</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="inp">
+    <div class="ib">
+      <textarea id="pr" rows="1" placeholder="Message kirannn…" onkeydown="hk(event)" oninput="ar(this)"></textarea>
+      <div class="ia">
+        <button class="iab" title="Shell" onclick="openMo('sh-mo')">💻</button>
+        <button class="iab" title="Files" onclick="openMo('fi-mo')">📁</button>
+        <button class="iab" title="Plan" onclick="openMo('pl-mo')">📋</button>
+        <button id="sb-btn" class="iab" onclick="send()" title="Send">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="hint">Enter to send · Shift+Enter newline · Use Pipeline for complex research tasks</div>
+  </div>
+</main>
+
+<!-- SHELL MODAL -->
+<div class="mb hidden" id="sh-mo">
+  <div class="mo">
+    <h3>💻 Shell Terminal</h3>
+    <input id="sh-cmd" placeholder="e.g. ollama ps  or  dir C:\my_ai_team" onkeydown="if(event.key=='Enter')runShell()"/>
+    <div class="pre-out" id="sh-out"></div>
+    <div class="mbtns">
+      <button class="mbtn s" onclick="closeMo('sh-mo')">Close</button>
+      <button class="mbtn p" onclick="runShell()">▶ Run</button>
+    </div>
+  </div>
+</div>
+
+<!-- FILE MODAL -->
+<div class="mb hidden" id="fi-mo">
+  <div class="mo">
+    <h3>📁 File Manager</h3>
+    <input id="fi-path" placeholder="Path e.g. C:\my_ai_team" oninput="debList()"/>
+    <div id="fi-list" style="background:var(--bg);border:1px solid var(--b);border-radius:7px;padding:8px;font-size:12px;font-family:var(--mono);min-height:60px;max-height:180px;overflow-y:auto;margin-bottom:8px;color:var(--m)">Enter a path above</div>
+    <textarea id="fi-cont" placeholder="File content (to write)…" rows="4"></textarea>
+    <div class="mbtns">
+      <button class="mbtn s" onclick="closeMo('fi-mo')">Close</button>
+      <button class="mbtn s" onclick="readFile()">Read</button>
+      <button class="mbtn p" onclick="writeFile()">Write</button>
+    </div>
+  </div>
+</div>
+
+<!-- MEMORY MODAL -->
+<div class="mb hidden" id="mm-mo">
+  <div class="mo" style="width:620px">
+    <h3>🧠 Memory Viewer</h3>
+    <div id="mm-cont" style="background:var(--bg);border:1px solid var(--b);border-radius:7px;padding:12px;font-size:12px;font-family:var(--mono);max-height:320px;overflow-y:auto;white-space:pre-wrap;margin-bottom:8px;color:var(--m)">Loading…</div>
+    <input id="mm-entry" placeholder="Add to memory…"/>
+    <div class="mbtns">
+      <button class="mbtn s" onclick="closeMo('mm-mo')">Close</button>
+      <button class="mbtn s" onclick="loadEpisodic()">View Episodic Stats</button>
+      <button class="mbtn p" onclick="saveMem()">Save to Memory</button>
+    </div>
+  </div>
+</div>
+
+<!-- SKILLS MODAL -->
+<div class="mb hidden" id="sk-mo">
+  <div class="mo">
+    <h3>⚡ Skills Hub</h3>
+    <div id="sk-list" style="font-size:13px;min-height:60px;margin-bottom:12px">Loading…</div>
+    <div class="mbtns"><button class="mbtn s" onclick="closeMo('sk-mo')">Close</button></div>
+  </div>
+</div>
+
+<!-- REPORTS MODAL -->
+<div class="mb hidden" id="rp-mo">
+  <div class="mo" style="width:600px">
+    <h3>📄 Saved Reports</h3>
+    <div id="rp-list" style="font-size:13px;min-height:60px;margin-bottom:8px">Loading…</div>
+    <div id="rp-view" style="background:var(--bg);border:1px solid var(--b);border-radius:7px;padding:12px;font-size:12px;max-height:300px;overflow-y:auto;white-space:pre-wrap;display:none;color:var(--m);font-family:var(--mono);margin-bottom:8px"></div>
+    <div class="mbtns"><button class="mbtn s" onclick="closeMo('rp-mo')">Close</button></div>
+  </div>
+</div>
+
+<!-- SELF-CODER MODAL -->
+<div class="mb hidden" id="sc-mo">
+  <div class="mo">
+    <h3>🧬 Self-Coder — Create New Skill</h3>
+    <p style="font-size:12px;color:var(--m);margin-bottom:10px">Describe a capability you want. kirannn will write the Python code and add it to Skills Hub automatically.</p>
+    <input id="sc-cap" placeholder="e.g. Monitor GPU temperature and usage on Windows"/>
+    <div class="pre-out" id="sc-out"></div>
+    <div class="mbtns">
+      <button class="mbtn s" onclick="closeMo('sc-mo')">Close</button>
+      <button class="mbtn p" onclick="runSelfCode()">🧬 Generate Skill</button>
+    </div>
+  </div>
+</div>
+
+<!-- TASK PLANNER MODAL -->
+<div class="mb hidden" id="pl-mo">
+  <div class="mo" style="width:620px">
+    <h3>📋 Task Planner</h3>
+    <p style="font-size:12px;color:var(--m);margin-bottom:10px">Enter a complex goal. kirannn will decompose it into sub-tasks and show you the plan before executing.</p>
+    <input id="pl-goal" placeholder="e.g. Research the impact of AI on the job market in India"/>
+    <div id="pl-result" style="background:var(--bg);border:1px solid var(--b);border-radius:7px;padding:12px;font-size:12px;font-family:var(--mono);max-height:300px;overflow-y:auto;white-space:pre-wrap;display:none;margin-bottom:8px;color:var(--m)"></div>
+    <div class="mbtns">
+      <button class="mbtn s" onclick="closeMo('pl-mo')">Close</button>
+      <button class="mbtn s" onclick="planOnly()">📋 Plan Only</button>
+      <button class="mbtn p" onclick="planAndExecute()">⚡ Plan + Execute</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const API='http://127.0.0.1:8000';
+let ag='agent', sid=rndId();
+function rndId(){return Math.random().toString(36).slice(2,8)}
+
+const AGENTS={
+  agent:    {c:'#e8420c', desc:'— plans, uses tools, remembers, acts autonomously', lbl:'Master Agent'},
+  pipeline: {c:'#fb923c', desc:'— full decompose → parallel sub-agents → synthesized report', lbl:'Full Pipeline'},
+  debate:   {c:'#60a5fa', desc:'— three models debate, qwen votes best', lbl:'Debate'},
+  code:     {c:'#a78bfa', desc:'— deepseek-coder with auto-execution', lbl:'Code'},
+  research: {c:'#4ade80', desc:'— web search + extraction + confidence analysis', lbl:'Research'},
+};
+
+// ── Status ──────────────────────────────────────────────────────────────────
+async function checkStatus(){
+  try{
+    const r=await fetch(API+'/health',{signal:AbortSignal.timeout(3000)});
+    const d=await r.json();
+    const ok=d.ollama==='ok';
+    document.getElementById('srvdot').className='pulse'+(ok?'':' off');
+    document.getElementById('srvtxt').textContent=ok?`Online · ${d.models?.length||0} models`:'Ollama offline';
+  }catch{
+    document.getElementById('srvdot').className='pulse off';
+    document.getElementById('srvtxt').textContent='Server offline';
+  }
+}
+checkStatus(); setInterval(checkStatus,15000);
+
+// ── Agent select ─────────────────────────────────────────────────────────────
+function sel(name){
+  ag=name;
+  document.querySelectorAll('.ab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('btn-'+name).classList.add('active');
+  const a=AGENTS[name];
+  document.getElementById('tldot').style.background=a.c;
+  document.getElementById('tlname').textContent=a.lbl;
+  document.getElementById('tldesc').textContent=a.desc;
+  newChat();
+}
+
+function newChat(){
+  document.getElementById('msgs').innerHTML=`
+    <div id="wc">
+      <div class="wc-ico">🦾</div>
+      <div class="wc-t">kirannn Agent</div>
+      <div class="wc-s">Autonomous AI with task planning, parallel sub-agents, web research, code execution, and persistent memory.</div>
+      <div class="chips">
+        <button class="chip" onclick="chip('Research the impact of solid-state batteries on the EV market')">🔋 EV battery research</button>
+        <button class="chip" onclick="chip('Write and run Python to list all .py files in current dir')">🐍 Run Python code</button>
+        <button class="chip" onclick="chip('What is the latest in autonomous AI agents?')">🤖 AI agents news</button>
+        <button class="chip" onclick="chip('Create a new skill for monitoring GPU usage')">🧬 Self-code GPU monitor</button>
+      </div>
+    </div>`;
+  sid=rndId();
+}
+
+function chip(t){document.getElementById('pr').value=t;send();}
+
+// ── Send ──────────────────────────────────────────────────────────────────────
+async function send(){
+  const ta=document.getElementById('pr');
+  const text=ta.value.trim();
+  if(!text)return;
+  const w=document.getElementById('wc'); if(w)w.remove();
+  ta.value=''; ta.style.height='auto';
+  document.getElementById('sb-btn').disabled=true;
+  appendUser(text);
+  const typing=appendTyping();
+  try{
+    const endpoint=ag==='pipeline'?'/chat/pipeline':
+                   ag==='debate'?'/chat/debate':
+                   ag==='code'?'/chat/code':
+                   ag==='research'?'/chat/research':'/chat/agent';
+    const r=await fetch(API+endpoint,{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({message:text,session_id:sid})
+    });
+    typing.remove();
+    if(!r.ok)throw new Error(`HTTP ${r.status}`);
+    const data=await r.json();
+    appendAI(data);
+  }catch(e){
+    typing.remove();
+    appendErr(e.message);
+  }
+  document.getElementById('sb-btn').disabled=false;
+  ta.focus();
+}
+
+// ── Render messages ──────────────────────────────────────────────────────────
+function appendUser(text){
+  const m=document.getElementById('msgs');
+  const d=document.createElement('div');d.className='mw';
+  d.innerHTML=`<div class="ur"><div class="ub">${esc(text)}</div></div>`;
+  m.appendChild(d);scroll();
+}
+
+function appendTyping(){
+  const m=document.getElementById('msgs');
+  const d=document.createElement('div');d.className='typing';
+  d.innerHTML='<div class="dots"><span></span><span></span><span></span></div>';
+  m.appendChild(d);scroll();return d;
+}
+
+function appendAI(data){
+  const m=document.getElementById('msgs');
+  const d=document.createElement('div');d.className='mw';
+  const a=AGENTS[ag];
+  let h=`<div class="air">
+    <div class="ai-who"><div class="ai-dot" style="background:${a.c}"></div>${esc(a.lbl)}</div>`;
+
+  // Pipeline mode — show plan + progress
+  if(data.plan){
+    h+=`<div class="plan-card"><div class="plan-title">📋 Task Plan</div>
+      <div style="font-size:12px;font-family:var(--mono);color:var(--m);white-space:pre-wrap">${esc(data.plan).slice(0,800)}</div>
+    </div>`;
+  }
+
+  // Tool trace
+  const trace=data.trace||[];
+  if(trace.length){
+    h+='<div class="trace">';
+    trace.forEach(t=>{
+      const ok=t.result?.success!==false;
+      h+=`<div class="trace-item ${ok?'ti-ok':''}">
+        <span class="ti-name">${esc(t.tool||'')}</span>
+        ${t.args?'<span style="color:var(--d)">'+esc(JSON.stringify(t.args)).slice(0,50)+'</span>':''}
+        <span style="margin-left:auto">${ok?'✓':'✗'}</span>
+      </div>`;
+    });
+    h+='</div>';
+  }
+
+  // Debate mode
+  if(data.responses){
+    const mc={llama3:'#fb923c',mistral:'#f472b6','qwen2.5:7b':'#818cf8',qwen:'#818cf8'};
+    h+='<div class="dg">';
+    for(const[m2,resp]of Object.entries(data.responses)){
+      const c=mc[m2]||'#60a5fa';
+      h+=`<div class="mc"><div class="mh" style="color:${c}"><span class="md-dot" style="background:${c}"></span>${esc(m2.toUpperCase())}</div>
+        <div class="mt">${fmt(String(resp).slice(0,500))}</div></div>`;
+    }
+    if(data.best){
+      h+=`<div class="best-card"><div class="best-h">⭐ Best — ${esc(data.winner||'')}</div>
+        <div style="font-size:14px;line-height:1.65">${fmt(String(data.best))}</div></div>`;
+    }
+    h+='</div>';
+  } else {
+    // Normal response with confidence highlighting
+    const resp=data.response||data.research||data.analysis||data.result||JSON.stringify(data);
+    let formatted=fmt(String(resp));
+    formatted=formatted.replace(/\[HIGH\]/g,'<span class="conf-high">[HIGH]</span>');
+    formatted=formatted.replace(/\[MEDIUM\]/g,'<span class="conf-med">[MEDIUM]</span>');
+    formatted=formatted.replace(/\[LOW\]/g,'<span class="conf-low">[LOW]</span>');
+    h+=`<div class="ai-body">${formatted}</div>`;
+  }
+
+  // Research sources
+  if(data.sources?.length){
+    h+='<div class="rc"><div style="font-size:11px;color:var(--d);margin-bottom:4px">Sources</div><div class="src-list">';
+    data.sources.forEach(s=>{ h+=`<div class="src-chip" title="${esc(s)}">${esc(s.replace(/https?:\/\//,'').slice(0,40))}</div>`; });
+    h+='</div></div>';
+  }
+
+  // Report saved
+  if(data.report_path){
+    h+=`<div class="rep-card">📄 Report saved: <a href="#" onclick="viewReport('${esc(data.report_path.split(/[\\/]/).pop())}');return false">${esc(data.report_path.split(/[\\/]/).pop())}</a></div>`;
+  }
+
+  // Executed code output
+  if(data.executed?.stdout){
+    h+=`<div class="trace"><div class="trace-item ti-ok"><span class="ti-name">executed</span><pre style="margin:4px 0 0;font-size:11px">${esc(data.executed.stdout.slice(0,500))}</pre></div></div>`;
+  }
+
+  h+='</div>';
+  d.innerHTML=h; m.appendChild(d);scroll();
+}
+
+function appendErr(msg){
+  const m=document.getElementById('msgs');
+  const d=document.createElement('div');d.className='mw';
+  d.innerHTML=`<div class="air"><div class="ai-who"><div class="ai-dot" style="background:#ef4444"></div>Error</div>
+    <div class="ai-body" style="color:#ef4444">⚠️ ${esc(msg)}<br><small style="color:var(--d)">Is uvicorn running? → uvicorn api.server:app --reload</small></div></div>`;
+  m.appendChild(d);scroll();
+}
+
+function fmt(text){
+  text=text.replace(/```(\w*)\n?([\s\S]*?)```/g,'<pre><code>$2</code></pre>');
+  text=text.replace(/`([^`]+)`/g,'<code>$1</code>');
+  text=text.replace(/\n/g,'<br>');
+  return text;
+}
+function scroll(){const m=document.getElementById('msgs');m.scrollTop=m.scrollHeight}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+// ── Modals ───────────────────────────────────────────────────────────────────
+function openMo(id){
+  document.getElementById(id).classList.remove('hidden');
+  if(id==='mm-mo')loadMem();
+  if(id==='sk-mo')loadSkills();
+  if(id==='rp-mo')loadReports();
+}
+function closeMo(id){document.getElementById(id).classList.add('hidden')}
+document.querySelectorAll('.mb').forEach(b=>{b.addEventListener('click',e=>{if(e.target===b)b.classList.add('hidden')})});
+
+// Shell
+async function runShell(){
+  const cmd=document.getElementById('sh-cmd').value.trim();
+  if(!cmd)return;
+  const out=document.getElementById('sh-out');
+  out.style.display='block'; out.textContent='Running…';
+  try{
+    const r=await fetch(API+'/shell',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({command:cmd})});
+    const d=await r.json();
+    out.textContent=d.stdout||d.stderr||'No output';
+  }catch(e){out.textContent='Error: '+e.message}
+}
+document.getElementById('sh-cmd').addEventListener('keydown',e=>{if(e.key==='Enter')runShell()});
+
+// Files
+let listT;
+function debList(){clearTimeout(listT);listT=setTimeout(listFiles,600)}
+async function listFiles(){
+  const path=document.getElementById('fi-path').value||'.';
+  const el=document.getElementById('fi-list');
+  try{
+    const r=await fetch(API+'/files?path='+encodeURIComponent(path));
+    const d=await r.json();
+    if(d.result){
+      el.innerHTML=d.result.map(i=>`<div style="padding:2px 0;cursor:pointer" onclick="document.getElementById('fi-path').value='${path.replace(/\\/g,'/')}/${i.name}';debList()">${i.type==='dir'?'📁':'📄'} ${i.name} ${i.size!=null?'<span style="color:var(--d)">('+i.size+' B)</span>':''}</div>`).join('');
+    }else el.textContent=JSON.stringify(d);
+  }catch(e){el.textContent='Error: '+e.message}
+}
+async function readFile(){
+  const path=document.getElementById('fi-path').value;
+  if(!path)return;
+  const r=await fetch(API+'/files/read?path='+encodeURIComponent(path));
+  const d=await r.json();
+  document.getElementById('fi-cont').value=d.result||d.error||'';
+}
+async function writeFile(){
+  const path=document.getElementById('fi-path').value;
+  const content=document.getElementById('fi-cont').value;
+  if(!path)return;
+  const r=await fetch(API+'/files/write',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({path,content})});
+  const d=await r.json();
+  alert(d.result||d.error);
+}
+
+// Memory
+async function loadMem(){
+  try{
+    const r=await fetch(API+'/memory');
+    const d=await r.json();
+    document.getElementById('mm-cont').textContent=d.result||'Empty';
+  }catch(e){document.getElementById('mm-cont').textContent='Error: '+e.message}
+}
+async function saveMem(){
+  const entry=document.getElementById('mm-entry').value.trim();
+  if(!entry)return;
+  await fetch(API+'/memory',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({entry})});
+  document.getElementById('mm-entry').value='';
+  loadMem();
+}
+async function loadEpisodic(){
+  try{
+    const r=await fetch(API+'/memory/episodic/stats');
+    const d=await r.json();
+    document.getElementById('mm-cont').textContent='[Episodic Stats]\n'+JSON.stringify(d,null,2);
+  }catch(e){document.getElementById('mm-cont').textContent='Error: '+e.message}
+}
+
+// Skills
+async function loadSkills(){
+  try{
+    const r=await fetch(API+'/skills');
+    const d=await r.json();
+    const el=document.getElementById('sk-list');
+    if(!d.skills?.length){el.innerHTML='<div style="color:var(--d);font-size:13px">No skills yet. Use Self-Coder to create some!</div>';return}
+    el.innerHTML=d.skills.map(s=>`<div style="padding:7px 0;border-bottom:1px solid var(--b);display:flex;justify-content:space-between;align-items:center">
+      <div><strong style="color:var(--acc);font-size:13px">${s.name}</strong><br><small style="color:var(--d);font-family:var(--mono)">${s.file} · ${s.size}B</small></div>
+      <span style="font-size:11px;color:var(--d)">${new Date(s.modified).toLocaleDateString()}</span>
+    </div>`).join('');
+  }catch(e){document.getElementById('sk-list').textContent='Error: '+e.message}
+}
+
+// Reports
+async function loadReports(){
+  try{
+    const r=await fetch(API+'/reports');
+    const d=await r.json();
+    const el=document.getElementById('rp-list');
+    if(!d.result?.length){el.innerHTML='<div style="color:var(--d);font-size:13px">No reports yet. Run a research or pipeline task.</div>';return}
+    el.innerHTML=d.result.slice(-10).reverse().map(f=>`<div style="padding:6px 0;border-bottom:1px solid var(--b);display:flex;justify-content:space-between;align-items:center">
+      <span style="font-size:13px;font-family:var(--mono);color:var(--m)">${f}</span>
+      <button onclick="viewReport('${f}')" style="font-size:11px;padding:3px 9px;background:var(--s2);border:1px solid var(--b);border-radius:5px;color:var(--m);cursor:pointer">View</button>
+    </div>`).join('');
+  }catch(e){document.getElementById('rp-list').textContent='Error: '+e.message}
+}
+async function viewReport(name){
+  const r=await fetch(API+'/reports/'+encodeURIComponent(name));
+  const d=await r.json();
+  const el=document.getElementById('rp-view');
+  el.textContent=d.result||d.error||'';
+  el.style.display='block';
+}
+
+// Self-Coder
+async function runSelfCode(){
+  const cap=document.getElementById('sc-cap').value.trim();
+  if(!cap)return;
+  const out=document.getElementById('sc-out');
+  out.style.display='block'; out.textContent='🧬 Writing skill code…';
+  try{
+    const r=await fetch(API+'/self-code?capability='+encodeURIComponent(cap),{method:'POST'});
+    const d=await r.json();
+    if(d.success){
+      out.textContent=`✅ Skill created: ${d.skill_name}\n\n${d.code}`;
+    }else{
+      out.textContent='❌ '+d.error;
+    }
+  }catch(e){out.textContent='Error: '+e.message}
+}
+
+// Task Planner
+async function planOnly(){
+  const goal=document.getElementById('pl-goal').value.trim();
+  if(!goal)return;
+  const el=document.getElementById('pl-result');
+  el.style.display='block'; el.textContent='📋 Planning…';
+  try{
+    const r=await fetch(API+'/plan',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({goal,execute:false})});
+    const d=await r.json();
+    el.textContent=d.plan_md||JSON.stringify(d,null,2);
+  }catch(e){el.textContent='Error: '+e.message}
+}
+async function planAndExecute(){
+  const goal=document.getElementById('pl-goal').value.trim();
+  if(!goal)return;
+  closeMo('pl-mo');
+  document.getElementById('pr').value=goal;
+  sel('pipeline');
+  send();
+}
+
+// Input helpers
+function hk(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send()}}
+function ar(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,150)+'px'}
+</script>
+</body>
+</html>

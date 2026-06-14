@@ -1,0 +1,47 @@
+version: '3.8'
+services:
+  redis:
+    image: redis:alpine
+    container_name: kirannn_redis
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+
+  kirannn:
+    build: .
+    container_name: kirannn_agent
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./memory:/app/memory
+      - ./logs:/app/logs
+      - ./reports:/app/reports
+      - ./config:/app/config
+    environment:
+      # Assume Ollama is running on the host machine
+      - OLLAMA_HOST=http://host.docker.internal:11434
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - redis
+    restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  celery_worker:
+    build: .
+    container_name: kirannn_celery
+    command: celery -A workers.celery_worker worker --loglevel=info
+    volumes:
+      - ./memory:/app/memory
+      - ./logs:/app/logs
+      - ./reports:/app/reports
+      - ./config:/app/config
+    environment:
+      - OLLAMA_HOST=http://host.docker.internal:11434
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - redis
+      - kirannn
+    restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

@@ -2,9 +2,9 @@
 core/planner.py — Task Decomposition Engine
 Breaks big goals into structured sub-tasks with assigned specialist agents.
 """
-import json, re, requests
-
-OLLAMA_URL = "http://localhost:11434/api/generate"
+import json, re
+from config.loader import cfg
+from core.llm import llm_generate
 
 PLANNER_SYSTEM = """You are a master project planner for an autonomous AI agent system called kirannn.
 
@@ -18,7 +18,7 @@ When given a high-level goal, you MUST respond with ONLY a JSON plan like this:
       "id": 1,
       "title": "Short task name",
       "description": "What exactly needs to be done",
-      "agent": "researcher|coder|analyst|writer|shell",
+      "agent": "researcher|coder|analyst|writer|shell|finance|health|twin|debate|github",
       "depends_on": [],
       "parallel": true
     }
@@ -32,21 +32,27 @@ Agent types:
 - analyst: synthesizing data, finding patterns, scoring confidence
 - writer: drafting reports, summaries, structured documents
 - shell: file operations, system commands, process management
+- finance: budget analysis, expenses, market trends, stocks
+- health: fitness tracking, sleep hygiene, recovery, wellness
+- twin: digital twin simulation of user preferences, email drafting
+- debate: resolve complex questions or trade-offs via multi-agent debate
+- github: sync repository data, check git status, update project context in memory
 
 Respond ONLY with the JSON. No other text."""
 
 
-def decompose(goal: str, model: str = "llama3") -> dict:
+def decompose(goal: str, model: str = None) -> dict:
     """Break a goal into structured sub-tasks."""
+    model = model or cfg("models", "planner", default="llama3")
     try:
-        r = requests.post(OLLAMA_URL, json={
-            "model": model,
-            "system": PLANNER_SYSTEM,
-            "prompt": f"Create a plan for: {goal}",
-            "stream": False,
-            "options": {"temperature": 0.2}
-        }, timeout=60)
-        raw = r.json().get("response", "").strip()
+        r = llm_generate(
+            model=model,
+            system=PLANNER_SYSTEM,
+            prompt=f"Create a plan for: {goal}",
+            stream=False,
+            options={"temperature": 0.2}
+        )
+        raw = r.get("response", "").strip()
         
         # Extract JSON
         match = re.search(r'\{.*\}', raw, re.DOTALL)
@@ -70,11 +76,14 @@ def format_plan_md(plan: dict) -> str:
         "",
         "### Sub-Tasks"
     ]
-    for t in p.get("sub_tasks", []):
+    sub_tasks = p.get("sub_tasks") or p.get("plan") or []
+    for t in sub_tasks:
         parallel = "⚡ parallel" if t.get("parallel") else "→ sequential"
         deps = f" (after {t['depends_on']})" if t.get("depends_on") else ""
-        lines.append(f"{t['id']}. **[{t['agent'].upper()}]** {t['title']}{deps} _{parallel}_")
-        lines.append(f"   {t['description']}")
+        title = t.get("title") or t.get("task", "Subtask")
+        desc = t.get("description") or t.get("task", "")
+        lines.append(f"{t['id']}. **[{t['agent'].upper()}]** {title}{deps} _{parallel}_")
+        lines.append(f"   {desc}")
     
     lines += ["", f"**Final Output:** {p.get('final_output', '?')}"]
     return "\n".join(lines)

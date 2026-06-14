@@ -1,0 +1,108 @@
+# config/settings.yaml — kirannn Production Configuration
+
+system:
+  name: kirannn
+  version: "3.0.0"
+  debug: false
+  log_level: INFO
+  max_workers: 4
+
+# ── Model routing ──────────────────────────────────────────────────────────────
+models:
+  planner:    "qwen2.5:7b"
+  research:   "mistral:latest"
+  code:       "deepseek-coder:6.7b"
+  judge:      "llama3:8b"
+  fallback:   "llama3:latest"
+  debate:
+    - "llama3:latest"
+    - "mistral:latest"
+    - "qwen2.5:7b"
+  ollama_url: "http://localhost:11434"
+  timeout:    120
+  retry_count: 3
+  retry_delay: 2.0
+
+# ── Memory ─────────────────────────────────────────────────────────────────────
+memory:
+  vector_db_path: "C:/my_ai_team/memory/chroma_db"
+  markdown_path:  "C:/my_ai_team/memory"
+  max_results:    10
+  similarity_threshold: 0.3
+  auto_summarize: true
+  summarize_after: 50   # messages
+
+# ── Task queue ─────────────────────────────────────────────────────────────────
+queue:
+  redis_url:    "redis://localhost:6379/0"
+  max_retries:  3
+  retry_delay:  5
+  task_timeout: 300
+  priorities:
+    high:   10
+    normal: 5
+    low:    1
+
+# ── RAG ────────────────────────────────────────────────────────────────────────
+rag:
+  chunk_size:    800
+  chunk_overlap: 100
+  top_k:         5
+  docs_path:     "C:/my_ai_team/data/docs"
+
+# ── Security ───────────────────────────────────────────────────────────────────
+security:
+  api_key_enabled: false
+  api_key:         ""
+  rate_limit:      60   # requests per minute
+  max_input_length: 8000
+  allowed_paths:
+    - "C:/my_ai_team"
+    - "C:/Users/Sai kiran/Documents"
+  blocked_commands:
+    - "rm -rf"
+    - "format"
+    - "del /f /s"
+    - "shutdown"
+
+# ── Sandbox ────────────────────────────────────────────────────────────────────
+sandbox:
+  enabled: false      # set true if Docker installed
+  timeout: 30
+  memory_limit: "256m"
+  cpu_limit: "0.5"
+  image: "python:3.11-slim"
+
+# ── Monitoring ─────────────────────────────────────────────────────────────────
+monitoring:
+  prometheus_port: 9090
+  metrics_enabled: true
+  health_check_interval: 60
+  log_file: "C:/my_ai_team/logs/kirannn.log"
+  max_log_size_mb: 50
+
+# ── Streaming ──────────────────────────────────────────────────────────────────
+streaming:
+  enabled: true
+  chunk_delay: 0.02   # seconds between chunks
+
+# ── Cache ──────────────────────────────────────────────────────────────────────
+cache:
+  enabled: true
+  ttl: 3600           # seconds
+  max_size: 500       # entries
+
+# ── Agents ─────────────────────────────────────────────────────────────────────
+agents:
+  max_steps: 12
+  parallel_workers: 4
+  roles:
+    - planner
+    - researcher
+    - coder
+    - analyst
+    - writer
+    - critic
+    - executor
+    - memory_manager
+    - security

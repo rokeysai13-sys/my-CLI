@@ -1,0 +1,12 @@
+{
+  "name": "desktop",
+  "version": "1.0.0",
+  "description": "Electron desktop Jarvis shell for kirannn",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "^33.2.0"
+  }
+}

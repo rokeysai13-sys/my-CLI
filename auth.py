@@ -1,3 +1,4 @@
+from core.logger import logger
 import sqlite3
 import hashlib
 import secrets
@@ -34,7 +35,7 @@ def init_auth():
     count = conn.execute("SELECT COUNT(*) as c FROM users").fetchone()["c"]
     if count == 0:
         create_user("kiran", "kiran123")
-        print("  Default user created: kiran / kiran123")
+        logger.info("  Default user created: kiran / kiran123")
     conn.close()
 
 def hash_password(password):
